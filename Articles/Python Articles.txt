@@ -1,0 +1,9 @@
+https://hackernoon.com/10-common-security-gotchas-in-python-and-how-to-avoid-them-e19fbe265e03
+
+https://link.springer.com/chapter/10.1007/978-3-319-96806-3_2
+
+https://ajinabraham.com/blog/exploiting-insecure-file-extraction-in-python-for-code-execution
+
+https://nvd.nist.gov/vuln/detail/CVE-2019-9674
+
+https://nvd.nist.gov/vuln/detail/CVE-2019-20907

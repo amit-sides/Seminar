@@ -1,0 +1,5 @@
+https://defuse.ca/exploiting-cpp-vtables.htm
+
+http://www2.ift.ulaval.ca/~desharnais/Recherche/RR/DIUL-RR-0803.pdf
+
+https://www.researchgate.net/profile/Chengyu_Song/publication/281784405_VTint_Protecting_Virtual_Function_Tables'_Integrity/links/55f8743d08ae07629dd5e648/VTint-Protecting-Virtual-Function-Tables-Integrity.pdf

@@ -1,0 +1,7 @@
+https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange
+
+https://www.usenix.org/legacy/publications/library/proceedings/ec96/full_papers/wagner/wagner.pdf
+
+https://www.researchgate.net/publication/262208728_A_cross-protocol_attack_on_the_TLS_protocol
+
+https://www.acunetix.com/blog/articles/tls-vulnerabilities-attacks-final-part/

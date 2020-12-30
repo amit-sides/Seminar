@@ -1,0 +1,7 @@
+https://digilander.libero.it/SNHYPER/files/arppoison.pdf
+
+http://csci6433.org/Papers/Anatomy%20of%20an%20ARP%20Poisoning%20Attack%20_%20WatchGuard.pdf
+
+https://www.cs.cornell.edu/~shmat/shmat_securecomm10.pdf
+
+http://vertassets.blob.core.windows.net/download/74db6f36/74db6f36-56e7-4f4f-a6b4-a1880089f28a/analysis_of_drdos_dns_reflection_attacks_white_paper_us_031513.pdf
