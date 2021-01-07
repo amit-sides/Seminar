@@ -1,5 +1,6 @@
 *~$*.doc
 *~$*.docx
+~WR*.tmp
 
 # Prerequisites
 *.d
