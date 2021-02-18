@@ -2,6 +2,9 @@
 *~$*.docx
 ~WR*.tmp
 
+*/cmake-build-debug
+*/.idea
+
 # Prerequisites
 *.d
 
