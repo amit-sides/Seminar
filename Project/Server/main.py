@@ -1,16 +1,36 @@
-# This is a sample Python script.
+import docker
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+DOCKER_IMAGE_NAME = "runner_image"
+DOCKER_BUILD_PATH = "."
+
+class TimeoutException(Exception): pass
+
+@contextlib.contextmanager
+def time_limit(seconds):
+    def signal_handler(signum, frame):
+        raise TimeoutException("Timed out!")
+    signal.signal(signal.SIGALRM, signal_handler)
+    signal.alarm(seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+
+def build_image():
+    client = docker.from_env()
+
+    return client.images.build(tag=DOCKER_IMAGE_NAME, path=DOCKER_BUILD_PATH)[0]
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def run_container(image, port):
+    client = docker.from_env()
+
+    return client.containers.run(image, detach=True, ports={DOCKER_EXPOSED_PORT : port})
 
 
-# Press the green button in the gutter to run the script.
+
+def main():
+    return
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    main()
