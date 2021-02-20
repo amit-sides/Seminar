@@ -10,6 +10,7 @@ class MessageType(enum.IntEnum):
     DONE_TRANSFER = 4               # End transfer
     ERROR = 5                       # Reports an error
 
+
 GENERIC_MESSAGE =                       construct.FixedSized(settings.MESSAGE_SIZE,
                                             construct.Struct(
                                                 "type"  / construct.Enum(construct.Byte, MessageType),

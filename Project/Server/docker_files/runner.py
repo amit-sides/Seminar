@@ -2,10 +2,9 @@ import os
 import sys
 import subprocess
 
-import signal
-import contextlib
-
 import communication
+import messages
+import settings
 
 USER_DIRECTORY = "user"
 
@@ -35,7 +34,7 @@ def main():
         error_text = e.args[0]
         error_message_dict = dict(
             type=messages.MessageType.ERROR,
-            error_code=-0xFFFF,
+            error_code=settings.ErrorCodes.UNKNOWN_ERROR,
             error_message_size=len(error_text),
             error_message=error_text
         )

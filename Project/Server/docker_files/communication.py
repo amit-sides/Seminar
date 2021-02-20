@@ -1,35 +1,38 @@
 import os
 import socket
+import select
 
 import settings
 import messages
 
-class DockerSocket(Object):
+SELECT_TIMEOUT = 1
+
+class DockerSocket(object):
     def __init__(self):
         self.host = None
 
     def connect_to_host(self):
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server.bind(("0.0.0.0", DOCKER_EXPOSED_PORT))
+        server.bind(("0.0.0.0", settings.DOCKER_EXPOSED_PORT))
 
         server.listen(1)
 
         self.host, _ = server.accept()
 
-    def recv_message(self, type):
+    def recv_message(self, message_type):
         message = self.host.recv(settings.MESSAGE_SIZE)
 
-        if len(message) != type.sizeof():
+        if len(message) != message_type.sizeof():
             raise socket.error("Invalid message size!")
 
-        message = type.parse(message)
+        message = message_type.parse(message)
         return message
 
     def send_message(self, message):
         data_message_dict = dict(
-            type = messages.MessageType.DATA,
-            chunk_size = len(message),
-            message = message
+            type=messages.MessageType.DATA,
+            chunk_size=len(message),
+            message=message,
         )
         message = messages.DATA_MESSAGE.build(data_message_dict)
         self.host.send(message)
@@ -49,8 +52,8 @@ class DockerSocket(Object):
 
         # Send Done Transfer Message
         done_message_dict = dict(
-            type = MessageType.DONE_TRANSFER,
-            return_code = 0,
+            type=messages.MessageType.DONE_TRANSFER,
+            return_code=0,
         )
         done_message = messages.DONE_TRANSFER_MESSAGE.build(done_message_dict)
         self.host.send(done_message)
@@ -60,7 +63,7 @@ class DockerSocket(Object):
     def handle_process_communication(self, process):
         # Send Execution Results Transfer Message
         execution_results_dict = dict(
-            type = messages.MessageType.TRANSFER_EXECUTION_RESULTS
+            type=messages.MessageType.TRANSFER_EXECUTION_RESULTS
         )
         message = messages.TRANSFER_EXECUTION_RESULTS_MESSAGE.build(execution_results_dict)
         self.host.send(message)
@@ -69,7 +72,7 @@ class DockerSocket(Object):
         try:
             # Pipe data between process and user
             while process.poll() is None:
-                r, _, _ = select.select([process.stdout, process.stderr, self.host], [], [], timeout=1)
+                r, _, _ = select.select([process.stdout, process.stderr, self.host], [], [], SELECT_TIMEOUT)
                 for proc_pipe in [process.stdout, process.stderr]:
                     if proc_pipe not in r:
                         continue
@@ -87,10 +90,10 @@ class DockerSocket(Object):
             # Error encountered - Send Error Message
             error_text = e.args[0]
             error_message_dict = dict(
-                type = messages.MessageType.ERROR,
-                error_code = -0xFFFF,
-                error_message_size = len(error_text),
-                error_message = error_text
+                type=messages.MessageType.ERROR,
+                error_code=settings.ErrorCodes.COMMUNICATION_ERROR,
+                error_message_size=len(error_text),
+                error_message=error_text,
             )
             message = messages.ERROR_MESSAGE.build(error_message_dict)
             self.host.send(message)
@@ -103,17 +106,3 @@ class DockerSocket(Object):
             )
             message = messages.DONE_TRANSFER_MESSAGE.build(done_message_dict)
             self.host.send(message)
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,36 +1,23 @@
-import docker
+import sys
+import logging
 
-DOCKER_IMAGE_NAME = "runner_image"
-DOCKER_BUILD_PATH = "."
-
-class TimeoutException(Exception): pass
-
-@contextlib.contextmanager
-def time_limit(seconds):
-    def signal_handler(signum, frame):
-        raise TimeoutException("Timed out!")
-    signal.signal(signal.SIGALRM, signal_handler)
-    signal.alarm(seconds)
-    try:
-        yield
-    finally:
-        signal.alarm(0)
-
-def build_image():
-    client = docker.from_env()
-
-    return client.images.build(tag=DOCKER_IMAGE_NAME, path=DOCKER_BUILD_PATH)[0]
-
-
-def run_container(image, port):
-    client = docker.from_env()
-
-    return client.containers.run(image, detach=True, ports={DOCKER_EXPOSED_PORT : port})
-
-
+import server
+import executer
+import docker_runner
 
 def main():
-    return
+    # Build docker image
+    logging.info("Building Docker Image...")
+    docker_image = docker_runner.build_image()
+    logging.info("Docker Image built!")
+
+    # Start the server
+    logging.info("Starting server...")
+    tls_server = server.TLSServer()
+    tls_server.start_server()
+    tls_server.serve_forever(executer.client_handler, docker_image)
+    return 0
+
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
