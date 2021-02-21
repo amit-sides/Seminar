@@ -3,14 +3,15 @@ import socket
 import multiprocessing
 import ssl
 
-CERTFILE = "keycert.pem"
+CERTFILE = "Certificates/server.crt"
+KEYFILE = "Certificates/server.key"
 PORT = 12345
 MAX_LISTENERS = 10
 
 class TLSServer(object):
     def __init__(self):
         self.context = ssl.SSLContext(ssl.PROTOCOL_TLS)
-        self.context.load_cert_chain(CERTFILE)
+        self.context.load_cert_chain(certfile=CERTFILE, keyfile=KEYFILE)
         self.context.options |= ssl.OP_NO_SSLv2 | ssl.OP_NO_SSLv3 | \
                                 ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1 | ssl.OP_NO_TLSv1_2
 
