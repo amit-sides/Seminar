@@ -29,10 +29,12 @@ class DockerSocket(object):
         return message
 
     def send_message(self, message):
+        if type(message) is str:
+            message = bytes(message, "ascii")
         data_message_dict = dict(
             type=messages.MessageType.DATA,
             chunk_size=len(message),
-            message=message,
+            chunk=message,
         )
         message = messages.DATA_MESSAGE.build(data_message_dict)
         self.host.send(message)
@@ -43,7 +45,7 @@ class DockerSocket(object):
         total_size = 0
 
         # Get script file with data messages
-        script_path = os.path.join(location, transfer_message.filename)
+        script_path = os.path.join(location, transfer_message.filename.decode("ascii"))
         with open(script_path, "wb") as script:
             while total_size < transfer_message.file_size:
                 data_message = self.recv_message(messages.DATA_MESSAGE)
@@ -84,11 +86,13 @@ class DockerSocket(object):
 
                 if self.host in r:
                     message = self.recv_message(messages.DATA_MESSAGE)
-                    process.stdin.write(message.chunk)
+                    print(f"got: {message.chunk.decode('ascii')}.")
+                    process.stdin.write(message.chunk.decode("ascii"))
+                    process.stdin.flush()
 
         except Exception as e:
             # Error encountered - Send Error Message
-            error_text = e.args[0]
+            error_text = bytes(e.args[0], "ascii")
             error_message_dict = dict(
                 type=messages.MessageType.ERROR,
                 error_code=settings.ErrorCodes.COMMUNICATION_ERROR,

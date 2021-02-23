@@ -1,6 +1,7 @@
 import sys
 import logging
 
+sys.path.append("docker_files")
 import server
 import executer
 import docker_runner

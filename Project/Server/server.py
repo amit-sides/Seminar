@@ -5,7 +5,7 @@ import ssl
 
 CERTFILE = "Certificates/server.crt"
 KEYFILE = "Certificates/server.key"
-PORT = 12345
+PORT = 12344
 MAX_LISTENERS = 10
 
 class TLSServer(object):
@@ -23,6 +23,7 @@ class TLSServer(object):
     def start_server(self):
         # Start TLS server
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind(("0.0.0.0", PORT))
         self.socket.listen(MAX_LISTENERS)
         self.server = self.context.wrap_socket(self.socket, server_side=True)
@@ -37,8 +38,9 @@ class TLSServer(object):
             except ssl.SSLError as e:
                 logging.error("Failed to accept a client: " + e.reason)
             else:
-                process = self.pool.Process(target=client_handler, args=(conn, addr) + args, kwargs=kwargs)
-                process.start()
+                client_handler(conn, addr, *args, **kwargs)
+                #process = self.pool.Process(target=client_handler, args=(conn, addr) + args, kwargs=kwargs)
+                #process.start()
 
     def __del__(self):
         self.pool.close()
