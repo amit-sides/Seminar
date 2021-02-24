@@ -74,7 +74,6 @@ def transfer_file(client, python_file):
         error_message = messages.ERROR_MESSAGE.parse(message)
         raise Exception(f"Transfer failed with {error_message.error_code}: {error_message.error_message}")
     elif int(generic_message.type) != messages.MessageType.DONE_TRANSFER:
-        import ipdb; ipdb.set_trace()
         print(generic_message)
         return False
 

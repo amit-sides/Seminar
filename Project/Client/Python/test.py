@@ -2,11 +2,11 @@ import time
 
 def main():
     print("Hello, World!")
-    time.sleep(30)
+    time.sleep(3)
     name = input("What is your name?\n")
     print(f"Hello, {name}!")
 
-    time.sleep(50)
+    time.sleep(5)
     print("Goodbye!")
 
 

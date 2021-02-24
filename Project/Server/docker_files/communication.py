@@ -18,6 +18,7 @@ class DockerSocket(object):
         server.listen(1)
 
         self.host, _ = server.accept()
+        self.host.recv(len(settings.SYNC_MESSAGE))
 
     def recv_message(self, message_type):
         message = self.host.recv(settings.MESSAGE_SIZE)

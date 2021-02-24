@@ -31,7 +31,7 @@ def main():
         process = execute_script(script_path)
         docker_socket.handle_process_communication(process)
     except Exception as e:
-        error_text = e.args[0]
+        error_text = bytes(e.args[0], "ascii")
         error_message_dict = dict(
             type=messages.MessageType.ERROR,
             error_code=settings.ErrorCodes.UNKNOWN_ERROR,

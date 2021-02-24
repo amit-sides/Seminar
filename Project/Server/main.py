@@ -6,7 +6,12 @@ import server
 import executer
 import docker_runner
 
+def configure_logging():
+    logging.basicConfig(level=logging.INFO)
+
 def main():
+    configure_logging()
+
     # Build docker image
     logging.info("Building Docker Image...")
     docker_image = docker_runner.build_image()
