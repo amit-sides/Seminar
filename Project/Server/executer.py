@@ -62,6 +62,9 @@ def handle_client(client, docker_port):
         docker_socket.close()
 
 def client_handler(client_socket, address, docker_image):
+    address = f"{address[0]}:{address[1]}"
+    logging.info(f"Client connected from {address}")
+
     # Get a random available port
     docker_port = find_free_port()
 

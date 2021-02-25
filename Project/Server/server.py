@@ -35,7 +35,6 @@ class TLSServer(object):
         while True:
             try:
                 conn, addr = self.server.accept()
-                logging.info(f"Client connected from {addr}")
             except ssl.SSLError as e:
                 logging.error("Failed to accept a client: " + e.reason)
             else:
