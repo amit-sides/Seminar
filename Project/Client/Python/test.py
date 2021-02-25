@@ -1,13 +1,15 @@
 import time
 
 def main():
-    print("Hello, World!")
-    time.sleep(3)
-    name = input("What is your name?\n")
-    print(f"Hello, {name}!")
+    print("Hello! I will count for you:")
 
-    time.sleep(70)
-    print("Goodbye!")
+    n = 1
+    while True:
+        print(n)
+        n += 1
+        time.sleep(1)
+        if n==20:
+            break
 
 
 if __name__ == "__main__":

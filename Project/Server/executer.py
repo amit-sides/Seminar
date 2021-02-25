@@ -27,7 +27,6 @@ def handle_client(client, docker_port):
         docker_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             docker_socket.connect(("localhost", docker_port))
-            docker_socket.send(settings.SYNC_MESSAGE)
             break
         except socket.error as e:
             pass
@@ -60,7 +59,6 @@ def handle_client(client, docker_port):
         message = messages.ERROR_MESSAGE.build(error_message_dict)
         client.send(message)
     finally:
-        client.close()
         docker_socket.close()
 
 def client_handler(client_socket, address, docker_image):
@@ -74,10 +72,11 @@ def client_handler(client_socket, address, docker_image):
     try:
         # Run the client handler
         handle_client(client_socket, docker_port)
+        logging.info(f"Finished serving client {address}")
 
     except timeout_decorator.TimeoutError as e:
         # Timeout occurred - Send Error Message
-        logging.warning("Timeout passed!")
+        logging.info(f"Timeout passed for client {address}")
         error_text = bytes(f"The maximum execution time of {CLIENT_TIMEOUT} seconds has passed!", "ascii")
         error_message_dict = dict(
             type=messages.MessageType.ERROR,

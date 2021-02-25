@@ -18,7 +18,6 @@ class DockerSocket(object):
         server.listen(1)
 
         self.host, _ = server.accept()
-        self.host.recv(len(settings.SYNC_MESSAGE))
 
     def recv_message(self, message_type):
         message = self.host.recv(settings.MESSAGE_SIZE)
@@ -79,10 +78,11 @@ class DockerSocket(object):
                 for proc_pipe in [process.stdout, process.stderr]:
                     if proc_pipe not in r:
                         continue
+
                     line = proc_pipe.readline()
-                    if not line:
-                        continue
-                    self.send_message(line)
+                    while line:
+                        self.send_message(line)
+                        line = proc_pipe.readline()
 
 
                 if self.host in r:

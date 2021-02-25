@@ -107,7 +107,7 @@ def communicate_with_script(client):
 
     if int(final_message.type) == messages.MessageType.ERROR:
         error_message = messages.ERROR_MESSAGE.parse(message)
-        raise Exception(f"Execution failed with {error_message.error_code}: {error_message.error_message}")
+        raise Exception(f"Execution failed with {hex(error_message.error_code)}: {error_message.error_message.decode('ascii')}")
 
     done_message = messages.DONE_TRANSFER_MESSAGE.parse(message)
     print(f"Execution finished with code {done_message.return_code}")
