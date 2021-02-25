@@ -39,11 +39,13 @@ class TLSServer(object):
             except ssl.SSLError as e:
                 logging.error("Failed to accept a client: " + e.reason)
             else:
-                client_handler(conn, addr, *args, **kwargs)
-                #process = self.pool.Process(target=client_handler, args=(conn, addr) + args, kwargs=kwargs)
-                #process.start()
+                process = self.pool.Process(target=client_handler, args=(conn, addr) + args, kwargs=kwargs)
+                process.start()
+
+    def close(self):
+        self.pool.close()
+        self.__del__()
 
     def __del__(self):
-        self.pool.close()
         self.pool.terminate()
         self.pool.join()

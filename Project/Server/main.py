@@ -21,7 +21,10 @@ def main():
     logging.info("Starting server...")
     tls_server = server.TLSServer()
     tls_server.start_server()
-    tls_server.serve_forever(executer.client_handler, docker_image)
+    try:
+        tls_server.serve_forever(executer.client_handler, docker_image)
+    except KeyboardInterrupt:
+        tls_server.close()
     return 0
 
 
