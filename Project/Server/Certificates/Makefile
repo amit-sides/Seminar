@@ -6,6 +6,7 @@ CA_NAME:=self-ca
 CA_CERT:=ca.crt
 CA_KEY:=ca.key
 CA_SRL:=ca.srl
+CA_PEM:=ca.pem
 
 SERVER_NAME:=serv
 SERVER_CERT:=server.crt
@@ -31,10 +32,11 @@ generate:
 	  -subj "/CN=$(SERVER_NAME)" -sha384 -nodes -keyout $(SERVER_KEY) -out $(SERVER_CSR)
 	
 	$(OPENSSL) x509 -req -CAcreateserial -in $(SERVER_CSR) -sha384 -CA $(CA_CERT) -CAkey $(CA_KEY) -out $(SERVER_CERT)
+	$(OPENSSL) x509 -in $(CA_CERT) -out $(CA_PEM) -outform PEM
 
 
 clean:
-	rm $(CA_CERT) $(CA_KEY) $(CA_SRL) $(SERVER_CERT) $(SERVER_KEY) $(SERVER_CSR)
+	rm $(CA_CERT) $(CA_KEY) $(CA_SRL) $(CA_PEM) $(SERVER_CERT) $(SERVER_KEY) $(SERVER_CSR)
 
 add:	$(CA_CERT)
 	cp $(CA_CERT) $(UBUNTU_CERT_DIR)/$(CA_CERT)

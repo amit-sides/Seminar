@@ -2,7 +2,7 @@
 *~$*.docx
 ~WR*.tmp
 
-*/cmake-build-debug
+*cmake-build-debug
 */.idea
 */*/.idea
 */*/*/.idea
@@ -12,6 +12,7 @@
 *.srl
 *.key
 *.csr
+*.pem
 
 # Prerequisites
 *.d
