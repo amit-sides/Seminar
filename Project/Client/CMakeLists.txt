@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 set(CMAKE_CXX_STANDARD 20)
 
 set(PROJECT_NAME Client)
-set(DEPENDENCIES wolfssl)
+set(DEPENDENCIES mbedtls)
 
 project(${PROJECT_NAME})
 set(SOURCE_FILES main.cpp)

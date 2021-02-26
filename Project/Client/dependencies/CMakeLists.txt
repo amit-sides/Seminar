@@ -1,9 +1,12 @@
 include(FetchContent)
 
 FetchContent_Declare(
-  WolfSSL
+  mbedTLS
 
-  GIT_REPOSITORY https://github.com/wolfSSL/wolfssl.git
-  GIT_TAG        master)
+  GIT_REPOSITORY https://github.com/ARMmbed/mbedtls.git
+  GIT_TAG        development)
 
-FetchContent_MakeAvailable(WolfSSL)
+FetchContent_MakeAvailable(mbedTLS)
+FetchContent_GetProperties(mbedTLS)
+message(Include: ${mbedtls_SOURCE_DIR}/include)
+include_directories("${mbedtls_SOURCE_DIR}/include")
