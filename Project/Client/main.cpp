@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <wolfssl/options.h>
 #include <wolfssl/ssl.h>
 #include <wolfssl/test.h>
@@ -38,10 +40,11 @@ int main()
 
 
     /* Add cert to ctx */
-    system("ls ../../Server/Certificates/ca.pem");
-    if (wolfSSL_CTX_load_verify_locations(ctx, "../../Server/Certificates/ca.pem", 0) !=
+    system("ls ../../Server/Certificates");
+    if (wolfSSL_CTX_load_verify_locations(ctx, "../../Server/Certificates/ca.pem", NULL) !=
             SSL_SUCCESS) {
-        err_sys("Error loading ca.pem");
+        std::cout << "Error: " << wolfSSL_CTX_load_verify_locations(ctx, NULL, "../../Server/Certificates") << std::endl;
+        //err_sys("Error loading ca.crt");
     }
 
     /* Connect wolfssl to the socket, server, then send message */

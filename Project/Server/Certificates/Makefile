@@ -12,6 +12,7 @@ SERVER_NAME:=serv
 SERVER_CERT:=server.crt
 SERVER_KEY:=server.key
 SERVER_CSR:=server.csr
+SERVER_PEM:=server.pem
 
 # To test the server certificate, run:
 # 	openssl s_client -connect <ip>:<port> -tls1_3
@@ -32,11 +33,12 @@ generate:
 	  -subj "/CN=$(SERVER_NAME)" -sha384 -nodes -keyout $(SERVER_KEY) -out $(SERVER_CSR)
 	
 	$(OPENSSL) x509 -req -CAcreateserial -in $(SERVER_CSR) -sha384 -CA $(CA_CERT) -CAkey $(CA_KEY) -out $(SERVER_CERT)
-	$(OPENSSL) x509 -in $(CA_CERT) -out $(CA_PEM) -outform PEM
+	$(OPENSSL) x509 -inform PEM -in $(SERVER_CERT) > $(SERVER_PEM)
+	$(OPENSSL) x509 -inform PEM -in $(CA_CERT) > $(CA_PEM)
 
 
 clean:
-	rm $(CA_CERT) $(CA_KEY) $(CA_SRL) $(CA_PEM) $(SERVER_CERT) $(SERVER_KEY) $(SERVER_CSR)
+	rm $(CA_CERT) $(CA_KEY) $(CA_SRL) $(CA_PEM) $(SERVER_CERT) $(SERVER_KEY) $(SERVER_CSR) $(SERVER_PEM)
 
 add:	$(CA_CERT)
 	cp $(CA_CERT) $(UBUNTU_CERT_DIR)/$(CA_CERT)
