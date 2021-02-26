@@ -14,6 +14,8 @@ SERVER_KEY:=server.key
 SERVER_CSR:=server.csr
 SERVER_PEM:=server.pem
 
+# Based on https://gist.github.com/fntlnz/cf14feb5a46b2eda428e000157447309
+
 # To test the server certificate, run:
 # 	openssl s_client -connect <ip>:<port> -tls1_3
 # 	-tls1_3 can be replace with: -tls1_2 / -tls1_1 / -tls1
@@ -24,15 +26,25 @@ SERVER_PEM:=server.pem
 .PHONY: generate clean add remove
 
 generate:
+	# Generate CA RSA Key
+	$(OPENSSL) genrsa -out $(CA_KEY) 4096
+	
 	# Generate self-signed CA
-	$(OPENSSL) req -x509 -newkey rsa-pss -pkeyopt rsa_keygen_bits:2048 \
-	  -subj "/CN=$(CA_NAME)" -sha384 -nodes -keyout $(CA_KEY) -out $(CA_CERT)
+	$(OPENSSL) req -x509 -new -nodes -subj "/CN=$(CA_NAME)" \
+		   -key $(CA_KEY) -sha384 -out $(CA_CERT)
 	
-	# Generate server end entity certificate
-	$(OPENSSL) req -newkey rsa-pss -pkeyopt rsa_keygen_bits:2048 \
-	  -subj "/CN=$(SERVER_NAME)" -sha384 -nodes -keyout $(SERVER_KEY) -out $(SERVER_CSR)
+	# Generate server RSA key
+	$(OPENSSL) genrsa -out $(SERVER_KEY) 4096
 	
-	$(OPENSSL) x509 -req -CAcreateserial -in $(SERVER_CSR) -sha384 -CA $(CA_CERT) -CAkey $(CA_KEY) -out $(SERVER_CERT)
+	# Create the signing request
+	$(OPENSSL) req -new -subj "/CN=$(SERVER_NAME)" \
+		   -key $(SERVER_KEY) -out $(SERVER_CSR)
+	
+	# Generate server certificate
+	$(OPENSSL) x509 -req -in $(SERVER_CSR) -CA $(CA_CERT) -CAkey $(CA_KEY) \
+		   -CAcreateserial -out $(SERVER_CERT) -sha384
+	
+	# Generate PEM files
 	$(OPENSSL) x509 -inform PEM -in $(SERVER_CERT) > $(SERVER_PEM)
 	$(OPENSSL) x509 -inform PEM -in $(CA_CERT) > $(CA_PEM)
 
