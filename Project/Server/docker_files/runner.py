@@ -9,12 +9,23 @@ import settings
 USER_DIRECTORY = "user"
 
 def execute_script(script_path):
+    print(f"script path: {script_path}")
     directory = os.path.dirname(script_path)
+
+    print(f"dir: {directory}")
+    print("create req file")
+    sys.stdout.flush()
 
     subprocess.check_call(["pipreqs", directory])
 
+    print("install reqs")
+    sys.stdout.flush()
+
     requirements_file = os.path.join(directory, "requirements.txt")
     subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", requirements_file])
+
+    print("executing...")
+    sys.stdout.flush()
 
     os.environ["PYTHONUNBUFFERED"] = "1"
     process = subprocess.Popen([sys.executable, script_path], stdin=subprocess.PIPE,
@@ -27,7 +38,10 @@ def main():
     docker_socket.connect_to_host()
 
     try:
+        print("getting script...")
         script_path = docker_socket.get_script(USER_DIRECTORY)
+
+        print("executing script...")
         process = execute_script(script_path)
         docker_socket.handle_process_communication(process)
     except Exception as e:

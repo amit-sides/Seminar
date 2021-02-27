@@ -152,6 +152,7 @@ std::string Client::communicate_with_script()
     char                                    err_msg[MESSAGE_SIZE * 2] = {0};
     fd_set                                  read_fds;
     char                                    chunk[MAXIMUM_CHUNK_SIZE] = {0};
+    uint32_t                                chunk_length = 0;
     done_transfer_message_t                 *done_message = nullptr;
     data_message_t                          *data_message = nullptr;
 
@@ -212,8 +213,17 @@ std::string Client::communicate_with_script()
         // Check for user input
         if (FD_ISSET(STDIN_FILENO, &read_fds))
         {
-            std::cin.getline(chunk, MAXIMUM_CHUNK_SIZE);
-            output = send_data_message(chunk, strlen(chunk)+1);
+            std::cin.getline(chunk, sizeof(chunk)-1);
+            chunk_length = strlen(chunk);
+            if (!std::cin.fail() || std::cin.eof())
+            {
+                // new line was found and some characters were extracted
+                // OR
+                // EOF was reached
+                chunk[chunk_length++] = '\n';
+                chunk[chunk_length] = '\0';
+            }
+            output = send_data_message(chunk, chunk_length+1);
             if (!output.empty())
             {
                 return output;
