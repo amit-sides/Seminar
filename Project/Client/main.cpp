@@ -22,8 +22,7 @@ int main()
     servAddr.sin_family = AF_INET;
     servAddr.sin_port = htons(SERV_PORT);
 
-    /* connect to socket */
-    connect(sockfd, (struct sockaddr *) &servAddr, sizeof(servAddr));
+
 
     /* initialize wolfssl library */
     wolfSSL_Init();
@@ -55,11 +54,15 @@ int main()
          err_sys("wolfSSL_new error");
     }
 
+    /* connect to socket */
+    connect(sockfd, (struct sockaddr *) &servAddr, sizeof(servAddr));
+
     /* Connect wolfssl to the socket, server, then send message */
     wolfSSL_set_fd(ssl, sockfd);
     wolfSSL_connect(ssl);
     wolfSSL_write(ssl, message, strlen(message));
     wolfSSL_shutdown(ssl);
+    close(sockfd);
 
     /* frees all data before client termination */
     wolfSSL_free(ssl);

@@ -6,7 +6,10 @@ set(PROJECT_NAME Client)
 set(DEPENDENCIES wolfssl)
 
 project(${PROJECT_NAME})
-set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES    main.cpp
+                    TLSSocket.cpp TLSSocket.h
+
+        )
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} ${DEPENDENCIES})
