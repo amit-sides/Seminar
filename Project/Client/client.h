@@ -6,13 +6,13 @@
 #include "tlssocket.h"
 
 class Client : public TLSSocket{
+private:
+    std::string send_data_message(const char *data, uint32_t data_size);
 
 public:
-    bool send_data_message(const char *data, uint32_t data_length);
+    std::string transfer_file(std::string filepath);
 
-    bool transfer_file(std::string filepath);
-
-    bool communicate_with_script();
+    std::string communicate_with_script();
 };
 
 

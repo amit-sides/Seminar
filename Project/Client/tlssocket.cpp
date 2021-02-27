@@ -108,7 +108,7 @@ bool TLSSocket::start_connection(const char *hostname, uint16_t port)
     }
 
     // Create server address struct
-    memcpy(&server_address, address, sizeof(server_address));
+    memcpy(&server_address, address->ai_addr, sizeof(server_address));
     server_address.sin_port = htons(port);
 
     // Free the resources allocated by getaddrinfo

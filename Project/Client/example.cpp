@@ -37,7 +37,7 @@ int main()
 
         /* Add cert to ctx */
 #define CA "../../Server/Certificates/ca.crt"
-    system("ls " CA);
+    (void)system("ls " CA);
     if (wolfSSL_CTX_load_verify_locations(ctx, CA, 0) !=
             SSL_SUCCESS) {
         std::cout << "Error: " << wolfSSL_CTX_load_verify_locations(ctx, CA, 0) << std::endl;
