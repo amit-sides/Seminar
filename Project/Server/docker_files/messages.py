@@ -6,7 +6,7 @@ import settings
 class MessageType(enum.IntEnum):
     TRANSFER_FILE = 1               # Start file transfer
     TRANSFER_EXECUTION_RESULTS = 2  # Start execution results transfer
-    DATA = 3                        # data transfer
+    DATA = 3                        # Data transfer
     DONE_TRANSFER = 4               # End transfer
     ERROR = 5                       # Reports an error
 

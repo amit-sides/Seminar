@@ -8,11 +8,12 @@ class TLSSocket {
 
 private:
     static bool         is_initialized;
-
     WOLFSSL_CTX *       context;
+
+protected:
     WOLFSSL *           connection;
-    int                 socket_fd;
     bool                connected;
+    int                 socket_fd;
 
 public:
     TLSSocket();

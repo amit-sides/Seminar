@@ -197,6 +197,7 @@ int TLSSocket::recv(char *message, int message_size)
     return result;
 }
 
+
 bool TLSSocket::close_connection()
 {
     int result = SSL_FATAL_ERROR;
@@ -210,8 +211,8 @@ bool TLSSocket::close_connection()
         {
             return false;
         }
-
         connected = false;
+
         // Free resources of TLS connection
         wolfSSL_free(connection);
         connection = nullptr;
@@ -232,7 +233,7 @@ bool TLSSocket::close_connection()
 }
 
 
-TLSSocket::~TLSSocket(void)
+TLSSocket::~TLSSocket()
 {
     // Shutdown connection
     if (connected)
@@ -243,6 +244,7 @@ TLSSocket::~TLSSocket(void)
 
         // Free resources of TLS connection
         wolfSSL_free(connection);
+        connection = nullptr;
     }
 
     // Close socket
