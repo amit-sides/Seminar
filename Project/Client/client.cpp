@@ -25,7 +25,7 @@ std::string Client::send_data_message(const char *data, uint32_t data_size)
 
     // Build message struct
     message.header.type = DATA;
-    message.header.chunk_size = data_size;
+    message.header.chunk_size = htonl(data_size);
     memcpy(&message.chunk, data, data_size);
 
     // Send message
@@ -78,7 +78,7 @@ std::string Client::transfer_file(std::string filepath)
 
     // Build transfer message
     message.header.type = TRANSFER_FILE;
-    message.header.file_size = size;
+    message.header.file_size = htonl(size);
     message.header.filename_size = filename_length;
     if (filename_length > sizeof(message.filename))
     {
@@ -107,7 +107,7 @@ std::string Client::transfer_file(std::string filepath)
 
     // Receive end transfer message
     result = recv((char *)&recv_message, sizeof(recv_message));
-    if (SSL_SUCCESS != result)
+    if (sizeof(recv_message) != result)
     {
         return "Failed to receive end of transfer message";
     }
@@ -118,6 +118,7 @@ std::string Client::transfer_file(std::string filepath)
             // Success case
         case DONE_TRANSFER:
             done_message = (done_transfer_message_t *)&recv_message;
+            done_message->header.return_code = ntohl(done_message->header.return_code);
             if (0 == done_message->header.return_code)
             {
                 return "";
@@ -165,7 +166,7 @@ std::string Client::communicate_with_script()
 
     // Receive transfer execution results message
     result = recv((char *)&recv_message, sizeof(recv_message));
-    if (SSL_SUCCESS != result)
+    if (sizeof(recv_message) != result)
     {
         return "Failed to receive transfer execution results message";
     }
@@ -201,7 +202,7 @@ std::string Client::communicate_with_script()
         FD_SET(STDIN_FILENO, &read_fds);
 
         // Execute select
-        result = select(std::max(socket_fd, STDIN_FILENO), &read_fds,
+        result = select(std::max(socket_fd, STDIN_FILENO) + 1, &read_fds,
                         nullptr, nullptr, nullptr);
         if (-1 == result)
         {
@@ -225,7 +226,7 @@ std::string Client::communicate_with_script()
             // Receive message
             memset(&recv_message, 0, sizeof(recv_message));
             result = recv((char *)&recv_message, sizeof(recv_message));
-            if (SSL_SUCCESS != result)
+            if (sizeof(recv_message) != result)
             {
                 return "Failed to receive message";
             }
@@ -242,6 +243,7 @@ std::string Client::communicate_with_script()
                     // End message
                 case DONE_TRANSFER:
                     done_message = (done_transfer_message_t  *)&recv_message;
+                    done_message->header.return_code = ntohl(done_message->header.return_code);
                     std::cout << "Execution finished with code " << done_message->header.return_code;
                     return "";
 
