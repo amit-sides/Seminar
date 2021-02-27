@@ -28,8 +28,10 @@ def execute_script(script_path):
     sys.stdout.flush()
 
     os.environ["PYTHONUNBUFFERED"] = "1"
-    process = subprocess.Popen([sys.executable, script_path], stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    process = subprocess.Popen([sys.executable, "-u", script_path], stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                               universal_newlines=True, bufsize=1)
+    print("updated!")
     return process
 
 def main():

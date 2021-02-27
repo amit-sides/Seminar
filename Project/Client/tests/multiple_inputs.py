@@ -1,11 +1,14 @@
 import time
+import sys
+import os
 
 def main():
+    print(f"env: {os.environ['PYTHONUNBUFFERED']}")
     print("Hello! What's your name?")
     name = input()
     print(f"Hi, {name}!")
     print("What's your age?")
-    age = input()
+    age = input("age???\n")
     print(f"You are a boomer! {age}")
     print("What's your password?")
     password = input()
@@ -16,7 +19,7 @@ def main():
         print(n)
         n += 1
         time.sleep(1)
-        if n==20:
+        if n==5:
             break
 
 

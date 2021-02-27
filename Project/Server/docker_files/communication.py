@@ -83,10 +83,13 @@ class DockerSocket(object):
         # Send Data Messages between process and client
         try:
             # Pipe data between process and user
-            while process.poll() is None:
+            r = [0]  # non-empty list
+            while process.poll() is None or len(r) > 0:
                 print("select...")
                 import sys
                 sys.stdout.flush()
+                process.stdout.flush()
+                process.stderr.flush()
                 r, _, _ = select.select([process.stdout, process.stderr, self.host], [], [], SELECT_TIMEOUT)
                 print(f"readers: {r}")
                 sys.stdout.flush()
@@ -94,16 +97,14 @@ class DockerSocket(object):
                     if proc_pipe not in r:
                         continue
 
-                    line = proc_pipe.readline()
-                    while line:
-                        print(f"sending line: {line}")
-                        sys.stdout.flush()
-                        self.send_message(line)
-                        print(f"reading line...")
-                        sys.stdout.flush()
-                        line = proc_pipe.readline()
-                        print(f"finished reading: {line}")
-                        sys.stdout.flush()
+                    line = proc_pipe.readline(settings.MAX_CHUNK_SIZE)
+                    if not line:
+                        r.remove(proc_pipe)
+                    print(f"sending line: {line}")
+                    sys.stdout.flush()
+                    self.send_message(line)
+                    print(f"sent line...")
+                    sys.stdout.flush()
 
 
                 if self.host in r:
