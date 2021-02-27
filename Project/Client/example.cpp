@@ -4,6 +4,8 @@
 #include <wolfssl/ssl.h>
 #include <wolfssl/test.h>
 #include <errno.h>
+#include "messages.h"
+
 #define SERV_PORT 11111
 #define NO_SHA256
 
@@ -53,6 +55,8 @@ int main()
     if ( (ssl = wolfSSL_new(ctx)) == NULL) {
          err_sys("wolfSSL_new error");
     }
+
+    printf("s: %lu\n", MAXIMUM_CHUNK_SIZE);
 
     /* connect to socket */
     connect(sockfd, (struct sockaddr *) &servAddr, sizeof(servAddr));

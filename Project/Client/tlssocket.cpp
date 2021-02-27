@@ -6,7 +6,7 @@
 #include <wolfssl/options.h>
 #include <wolfssl/ssl.h>
 
-#include "TLSSocket.h"
+#include "tlssocket.h"
 
 bool TLSSocket::is_initialized = false;
 

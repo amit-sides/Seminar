@@ -21,6 +21,9 @@ SERVER_PEM:=server.pem
 # 	-tls1_3 can be replace with: -tls1_2 / -tls1_1 / -tls1
 #
 # 	Check that the return code is always 0: "Verify return code: 0 (ok)"
+#
+# To test a client, run:
+# 	openssl s_server -key server.key -cert server.crt --accept <port> -tls1_3
 
 
 .PHONY: generate clean add remove

@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "TLSSocket.h"
+#include "tlssocket.h"
 
 class Client : public TLSSocket{
 

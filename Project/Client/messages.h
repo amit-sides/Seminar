@@ -3,7 +3,8 @@
 
 #include <stdint.h>
 
-#define MESSAGE_SIZE    (1024)
+#define MESSAGE_SIZE        (1024)
+#define MAXIMUM_CHUNK_SIZE  sizeof(((data_message_t *)0)->chunk)
 
 enum MessageType
 {

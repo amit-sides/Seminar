@@ -9,7 +9,7 @@ set(DEPENDENCIES wolfssl)
 
 project(${PROJECT_NAME})
 set(SOURCE_FILES    main.cpp
-                    TLSSocket.cpp   TLSSocket.h
+                    tlssocket.cpp tlssocket.h
                     messages.h
                     client.cpp client.h
                     example.cpp)
