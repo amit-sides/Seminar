@@ -44,21 +44,13 @@ class DockerSocket(object):
         transfer_message = self.recv_message(messages.TRANSFER_FILE_MESSAGE)
         total_size = 0
 
-        print(f"got recv message: {transfer_message.filename}")
-        print(f"filename length: {transfer_message.filename_size}")
-        print(f"file size: {transfer_message.file_size}")
-
         # Get script file with data messages
         script_path = os.path.join(location, transfer_message.filename.decode("ascii"))
         with open(script_path, "wb") as script:
             while total_size < transfer_message.file_size:
-                print("getting data message...")
                 data_message = self.recv_message(messages.DATA_MESSAGE)
-                print(f"got data message: {data_message.chunk_size}")
                 total_size += data_message.chunk_size
                 script.write(data_message.chunk)
-
-        print(f"got file: {total_size}")
 
         # Send Done Transfer Message
         done_message_dict = dict(
@@ -67,8 +59,6 @@ class DockerSocket(object):
         )
         done_message = messages.DONE_TRANSFER_MESSAGE.build(done_message_dict)
         self.host.send(done_message)
-
-        print("sent done!")
 
         return script_path
 
@@ -85,12 +75,7 @@ class DockerSocket(object):
             # Pipe data between process and user
             r = [0]  # non-empty list
             while process.poll() is None or len(r) > 0:
-                print("select...")
-                import sys
-                sys.stdout.flush()
                 r, _, _ = select.select([process.stdout, process.stderr, self.host], [], [], SELECT_TIMEOUT)
-                print(f"readers: {r}")
-                sys.stdout.flush()
                 for proc_pipe in [process.stdout, process.stderr]:
                     if proc_pipe not in r:
                         continue
@@ -100,22 +85,17 @@ class DockerSocket(object):
                     except OSError:
                         r.remove(proc_pipe)
                         continue
-                    print(f"read: {line}")
-                    sys.stdout.flush()
+
                     if not line:
                         r.remove(proc_pipe)
                         continue
+
                     line = line.decode("ascii")
-                    print(f"sending line: {line}")
-                    sys.stdout.flush()
                     self.send_message(line)
-                    print(f"sent line...")
-                    sys.stdout.flush()
 
 
                 if self.host in r:
                     message = self.recv_message(messages.DATA_MESSAGE)
-                    print(f"got: {message.chunk.decode('ascii')}.")
                     process.stdin.write(message.chunk)
                     process.stdin.flush()
 

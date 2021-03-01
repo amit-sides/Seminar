@@ -35,9 +35,7 @@ def handle_client(client, docker_port):
     try:
         connected = True
         while connected:
-            logging.info("Waiting for message...")
             r, _, _ = select.select([client, docker_socket], [], [])
-            logging.info(f"Got message from: {r}")
             for sender in r:
                 receiver = docker_socket if sender is client else client
                 message = sender.recv(settings.MESSAGE_SIZE)
