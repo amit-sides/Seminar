@@ -1,5 +1,6 @@
 import os
 import sys
+import fcntl
 import subprocess
 
 import communication
@@ -28,9 +29,12 @@ def execute_script(script_path):
     sys.stdout.flush()
 
     os.environ["PYTHONUNBUFFERED"] = "1"
-    process = subprocess.Popen([sys.executable, "-u", script_path], stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                               universal_newlines=True, bufsize=1)
+    cmd = ["stdbuf", "-oL", "-eL", sys.executable, script_path]
+    process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE, bufsize=0)
+    for proc_pipe in [process.stdout, process.stderr]:
+        fl = fcntl.fcntl(proc_pipe.fileno(), fcntl.F_GETFL)
+        fcntl.fcntl(proc_pipe.fileno(), fcntl.F_SETFL, fl | os.O_NONBLOCK)
     print("updated!")
     return process
 

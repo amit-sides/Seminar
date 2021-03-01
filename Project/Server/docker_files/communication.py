@@ -88,8 +88,6 @@ class DockerSocket(object):
                 print("select...")
                 import sys
                 sys.stdout.flush()
-                process.stdout.flush()
-                process.stderr.flush()
                 r, _, _ = select.select([process.stdout, process.stderr, self.host], [], [], SELECT_TIMEOUT)
                 print(f"readers: {r}")
                 sys.stdout.flush()
@@ -97,9 +95,17 @@ class DockerSocket(object):
                     if proc_pipe not in r:
                         continue
 
-                    line = proc_pipe.readline(settings.MAX_CHUNK_SIZE)
+                    try:
+                        line = proc_pipe.readline(settings.MAX_CHUNK_SIZE)
+                    except OSError:
+                        r.remove(proc_pipe)
+                        continue
+                    print(f"read: {line}")
+                    sys.stdout.flush()
                     if not line:
                         r.remove(proc_pipe)
+                        continue
+                    line = line.decode("ascii")
                     print(f"sending line: {line}")
                     sys.stdout.flush()
                     self.send_message(line)
@@ -110,7 +116,7 @@ class DockerSocket(object):
                 if self.host in r:
                     message = self.recv_message(messages.DATA_MESSAGE)
                     print(f"got: {message.chunk.decode('ascii')}.")
-                    process.stdin.write(message.chunk.decode("ascii"))
+                    process.stdin.write(message.chunk)
                     process.stdin.flush()
 
         except Exception as e:
