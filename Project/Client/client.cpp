@@ -6,6 +6,25 @@
 #include "client.h"
 #include "messages.h"
 
+
+std::string int_to_hex(int32_t x)
+{
+    std::string output;
+    std::stringstream ss;
+
+    if (x < 0)
+    {
+        output.append("-");
+        x ^= 0xFFFFFFFF;
+        x++;
+    }
+    output.append("0x");
+    ss << std::hex << std::uppercase << x;
+    output.append(ss.str());
+
+    return output;
+}
+
 std::string Client::send_data_message(const char *data, uint32_t data_size)
 {
     int             result = SSL_FATAL_ERROR;
@@ -130,8 +149,8 @@ std::string Client::transfer_file(std::string filepath)
             // Error case
         case ERROR:
             error_message = (error_message_t *)&recv_message;
-            std::snprintf(err_msg, sizeof(err_msg) - 1, "Transfer failed with %d: %s",
-                               error_message->header.error_code, error_message->error_message);
+            std::snprintf(err_msg, sizeof(err_msg) - 1, "Transfer failed with %s: %s",
+                               int_to_hex(error_message->header.error_code).c_str(), error_message->error_message);
             break;
 
             // Unknown message
@@ -156,9 +175,6 @@ std::string Client::communicate_with_script()
     done_transfer_message_t                 *done_message = nullptr;
     data_message_t                          *data_message = nullptr;
 
-
-
-
     // Make sure the connection is active
     if (!connected)
     {
@@ -182,8 +198,8 @@ std::string Client::communicate_with_script()
             // Error case
         case ERROR:
             error_message = (error_message_t *)&recv_message;
-            std::snprintf(err_msg, sizeof(err_msg) - 1, "Received error message %d: %s",
-                               error_message->header.error_code, error_message->error_message);
+            std::snprintf(err_msg, sizeof(err_msg) - 1, "Received error message %s: %s",
+                               int_to_hex(error_message->header.error_code).c_str(), error_message->error_message);
             return std::string(err_msg);
 
         default:
@@ -191,6 +207,9 @@ std::string Client::communicate_with_script()
                   "Received unknown message with type %d", recv_message.header.type);
             return std::string(err_msg);
     }
+
+    std::cout << "Executing script on server..." << std::endl;
+    std::cout << "================================================" << std::endl << std::endl;
 
     // Wait for user input and messages simultaneously using select
     while(true)
@@ -207,6 +226,7 @@ std::string Client::communicate_with_script()
                         nullptr, nullptr, nullptr);
         if (-1 == result)
         {
+            std::cout <<  std::endl << "================================================" << std::endl;
             return "Select failed";
         }
 
@@ -226,6 +246,7 @@ std::string Client::communicate_with_script()
             output = send_data_message(chunk, chunk_length+1);
             if (!output.empty())
             {
+                std::cout <<  std::endl << "================================================" << std::endl;
                 return output;
             }
         }
@@ -238,6 +259,7 @@ std::string Client::communicate_with_script()
             result = recv((char *)&recv_message, sizeof(recv_message));
             if (sizeof(recv_message) != result)
             {
+                std::cout <<  std::endl << "================================================" << std::endl;
                 return "Failed to receive message";
             }
 
@@ -247,26 +269,31 @@ std::string Client::communicate_with_script()
                     // Data message
                 case DATA:
                     data_message = (data_message_t  *)&recv_message;
-                    std::cout << data_message->chunk;
+                    data_message->header.chunk_size = ntohl(data_message->header.chunk_size);
+                    std::cout.write((const char *)data_message->chunk, data_message->header.chunk_size);
+                    std::cout.flush();
                     break;
 
                     // End message
                 case DONE_TRANSFER:
                     done_message = (done_transfer_message_t  *)&recv_message;
                     done_message->header.return_code = ntohl(done_message->header.return_code);
+                    std::cout <<  std::endl << "================================================" << std::endl;
                     std::cout << "Execution finished with code " << done_message->header.return_code;
                     return "";
 
                     // Error message
                 case ERROR:
                     error_message = (error_message_t *)&recv_message;
-                    std::snprintf(err_msg, sizeof(err_msg) - 1, "Received error message %d: %s",
-                                       error_message->header.error_code, error_message->error_message);
+                    std::snprintf(err_msg, sizeof(err_msg) - 1, "Received error message %s: %s",
+                                       int_to_hex(error_message->header.error_code).c_str(), error_message->error_message);
+                    std::cout <<  std::endl << "================================================" << std::endl;
                     return std::string(err_msg);
 
                 default:
                     std::snprintf(err_msg, sizeof(err_msg) - 1,
                           "Received unknown message with type %d", recv_message.header.type);
+                    std::cout <<  std::endl << "================================================" << std::endl;
                     return std::string(err_msg);
             }
         }

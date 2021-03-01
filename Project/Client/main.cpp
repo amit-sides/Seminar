@@ -91,6 +91,7 @@ int execute_client(int argc, char **argv)
         return -4;
     }
 
+    printf("\n");
     return 0;
 }
 

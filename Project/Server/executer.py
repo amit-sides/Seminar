@@ -11,7 +11,7 @@ from docker_files import settings
 from docker_files import messages
 import docker_runner
 
-CLIENT_TIMEOUT = 6000  # Seconds
+CLIENT_TIMEOUT = 60  # Seconds
 
 def find_free_port():
     with contextlib.closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
@@ -71,9 +71,9 @@ def client_handler(client_socket, address, docker_image):
     docker_port = find_free_port()
 
     # Start the container
-    # container = docker_runner.run_container(docker_image, docker_port)
-    # container.start()
-    input(f"Run the container! port {docker_port}")
+    container = docker_runner.run_container(docker_image, docker_port)
+    container.start()
+    # input(f"Run the container! port {docker_port}")
 
     try:
         # Run the client handler

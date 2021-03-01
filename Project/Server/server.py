@@ -35,12 +35,12 @@ class TLSServer(object):
         while True:
             try:
                 conn, addr = self.server.accept()
-            except ssl.SSLError as e:
-                logging.error("Failed to accept a client: " + e.reason)
+            except (OSError, ConnectionError) as e:
+                logging.error("Failed to accept a client: {}".format(e.args))
             else:
-                client_handler(conn, addr, *args, **kwargs)
-                #process = self.pool.Process(target=client_handler, args=(conn, addr) + args, kwargs=kwargs)
-                #process.start()
+                # client_handler(conn, addr, *args, **kwargs)
+                process = self.pool.Process(target=client_handler, args=(conn, addr) + args, kwargs=kwargs)
+                process.start()
 
     def close(self):
         self.pool.close()
