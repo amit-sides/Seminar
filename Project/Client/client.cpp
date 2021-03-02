@@ -234,6 +234,11 @@ std::string Client::communicate_with_script()
         if (FD_ISSET(STDIN_FILENO, &read_fds))
         {
             std::cin.getline(chunk, sizeof(chunk)-1);
+            if (std::cin.bad())
+            {
+                std::cout <<  std::endl << "================================================" << std::endl;
+                return "Failed to read input";
+            }
             chunk_length = strlen(chunk);
             if (!std::cin.fail() || std::cin.eof())
             {
@@ -243,6 +248,7 @@ std::string Client::communicate_with_script()
                 chunk[chunk_length++] = '\n';
                 chunk[chunk_length] = '\0';
             }
+            std::cin.clear();
             output = send_data_message(chunk, chunk_length+1);
             if (!output.empty())
             {
