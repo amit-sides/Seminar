@@ -71,7 +71,6 @@ def client_handler(client_socket, address, docker_image):
     # Start the container
     container = docker_runner.run_container(docker_image, docker_port)
     container.start()
-    # input(f"Run the container! port {docker_port}")
 
     try:
         # Run the client handler

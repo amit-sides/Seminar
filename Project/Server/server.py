@@ -38,7 +38,6 @@ class TLSServer(object):
             except (OSError, ConnectionError) as e:
                 logging.error("Failed to accept a client: {}".format(e.args))
             else:
-                # client_handler(conn, addr, *args, **kwargs)
                 process = self.pool.Process(target=client_handler, args=(conn, addr) + args, kwargs=kwargs)
                 process.start()
 
