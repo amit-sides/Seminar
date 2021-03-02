@@ -34,7 +34,7 @@ def main():
 
     try:
         script_path = docker_socket.get_script(USER_DIRECTORY)
-        
+
         process = execute_script(script_path)
         docker_socket.handle_process_communication(process)
     except Exception as e:

@@ -42,7 +42,9 @@ def handle_client(client, docker_port):
                 if len(message) == 0:
                     connected = False
                     break
+                logging.info(f"Sending... {len(message)}: {message[:10]}")
                 receiver.send(message)
+                logging.info(f"Sent!")
     except (socket.error, ssl.SSLError) as e:
         # Error encountered - Send Error Message
         if len(e.args) > 1:
@@ -69,9 +71,9 @@ def client_handler(client_socket, address, docker_image):
     docker_port = find_free_port()
 
     # Start the container
-    container = docker_runner.run_container(docker_image, docker_port)
-    container.start()
-    # input(f"Run the container! port {docker_port}")
+    # container = docker_runner.run_container(docker_image, docker_port)
+    # container.start()
+    input(f"Run the container! port {docker_port}")
 
     try:
         # Run the client handler

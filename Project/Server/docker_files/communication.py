@@ -95,7 +95,9 @@ class DockerSocket(object):
 
 
                 if self.host in r:
+                    print(f"Getting input...")
                     message = self.recv_message(messages.DATA_MESSAGE)
+                    print(f"Got input: {message}")
                     process.stdin.write(message.chunk)
                     process.stdin.flush()
 
