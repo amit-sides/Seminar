@@ -75,11 +75,14 @@ class DockerSocket(object):
             # Pipe data between process and user
             r = [0]  # non-empty list
             while process.poll() is None or len(r) > 0:
+                # Wait for IO from client or process
                 r, _, _ = select.select([process.stdout, process.stderr, self.host], [], [], SELECT_TIMEOUT)
+
+                # Check for output from the process
                 for proc_pipe in [process.stdout, process.stderr]:
                     if proc_pipe not in r:
                         continue
-
+                    
                     try:
                         line = proc_pipe.readline(settings.MAX_CHUNK_SIZE)
                     except OSError:
@@ -93,7 +96,7 @@ class DockerSocket(object):
                     line = line.decode("ascii")
                     self.send_message(line)
 
-
+                # Check for input from the client
                 if self.host in r:
                     message = self.recv_message(messages.DATA_MESSAGE)
                     process.stdin.write(message.chunk)

@@ -7,7 +7,8 @@ import executer
 import docker_runner
 
 def configure_logging():
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, datefmt="%d.%m.%Y %H:%M:%S",
+                        format="%(asctime)-19s [%(levelname)-8s] %(funcName)-21s | %(message)s")
 
 def main():
     configure_logging()

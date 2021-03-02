@@ -10,17 +10,21 @@ import settings
 USER_DIRECTORY = "user"
 
 def execute_script(script_path):
+    # Create requirements.txt file for script
     directory = os.path.dirname(script_path)
-
     subprocess.check_call(["pipreqs", directory])
 
+    # Install the requirements for the script
     requirements_file = os.path.join(directory, "requirements.txt")
     subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", requirements_file])
 
+    # Run the script in another process
+    # A lot of configurations were needed to disable the process's buffering...
     os.environ["PYTHONUNBUFFERED"] = "1"
     cmd = ["stdbuf", "-oL", "-eL", sys.executable, script_path]
     process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE, bufsize=0)
+    # Setting the process's IO to be non-blocking
     for proc_pipe in [process.stdout, process.stderr]:
         fl = fcntl.fcntl(proc_pipe.fileno(), fcntl.F_GETFL)
         fcntl.fcntl(proc_pipe.fileno(), fcntl.F_SETFL, fl | os.O_NONBLOCK)
@@ -38,6 +42,7 @@ def main():
         process = execute_script(script_path)
         docker_socket.handle_process_communication(process)
     except Exception as e:
+        # Error encountered - Send Error Message
         error_text = bytes(e.args[0], "ascii")
         error_message_dict = dict(
             type=messages.MessageType.ERROR,

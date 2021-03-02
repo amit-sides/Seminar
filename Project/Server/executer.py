@@ -35,6 +35,7 @@ def handle_client(client, docker_port):
     try:
         connected = True
         while connected:
+            # Waits on the socket of both sides and transmit the data when available
             r, _, _ = select.select([client, docker_socket], [], [])
             for sender in r:
                 receiver = docker_socket if sender is client else client
