@@ -43,7 +43,11 @@ class TLSServer(object):
             except (OSError, ConnectionError) as e:
                 logging.error("Failed to accept a client: {}".format(e.args))
             else:
-                process = self.pool.Process(target=client_handler, args=(conn, addr) + args, kwargs=kwargs)
+                try:
+                    process = self.pool.Process(target=client_handler, args=(conn, addr) + args, kwargs=kwargs)
+                except TypeError:  # In python 3.8+ The Process function requires additional parameter called `ctx`
+                    ctx = multiprocessing.get_context("fork")
+                    process = self.pool.Process(ctx, target=client_handler, args=(conn, addr) + args, kwargs=kwargs)
                 process.start()
 
     def close(self):
