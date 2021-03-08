@@ -13,27 +13,27 @@ This client connects to the server and requests the server to execute python scr
 * Linux machine (Tested on Ubuntu 20.04.2 - 64 bit). Setup instructions demonstrate Ubuntu's setup commands.
 * CMake (Tested with version 3.16.3)
 * Make (Tested with version 4.2.1)
-* gcc 10 (Compiled with gcc 10.1.0)
-* g++ 10 (Compiled with g++ 10.1.0)
+* gcc 10 (Compiled with gcc 10.2.0)
+* g++ 10 (Compiled with g++ 10.2.0)
 
 ## Setup
 
 2. Install Make, CMake, GCC, G++, if you don't have them already:
 
-   ```batch
+   ```bash
    sudo apt-get install make cmake gcc-10 g++-10
    ```
 
 2. Create the build directory
 
-   ```batch
+   ```bash
    mkdir build
    cd build
    ```
 
 3. Run CMake to configure the compilation files
 
-   ```batch
+   ```bash
    cmake ..
    ```
 
@@ -42,13 +42,13 @@ This client connects to the server and requests the server to execute python scr
 
 4. Run Make to build the project:
 
-   ```batch
+   ```bash
    make
    ```
 
 6. You now should be ready to run the client:
 
-   ```batch
+   ```bash
    ./Client <Server Host> <Port> <Python Script> [CA Certificate]
    ```
 

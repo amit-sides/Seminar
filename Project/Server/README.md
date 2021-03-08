@@ -27,25 +27,25 @@ This server executes python scripts given by it's clients.
 
 1. Install python 3 and pip, if you don't have it already:
 
-   ```batch
+   ```bash
    sudo apt-get install python3 python3-pip
    ```
 
 2. Install Docker, Make, OpenSSL, if you don't have them already:
 
-   ```batch
+   ```bash
    sudo apt-get install docker.io make openssl
    ```
 
 3. Run the following commands to install the required python packages:
 
-   ```batch
+   ```bash
    python3 -m pip install -r requirements.txt
    ```
 
 4. Generate the CA & server certificates by running the following commands:
 
-   ```batch
+   ```bash
    cd Certificates
    make generate
    cd ..
@@ -57,7 +57,7 @@ This server executes python scripts given by it's clients.
 
    * If it doesn't, add the user to the `docker` group:
 
-   ```batch
+   ```bash
    sudo groupadd docker
    sudo gpasswd -a $USER docker
    newgrp docker
@@ -65,7 +65,7 @@ This server executes python scripts given by it's clients.
 
 6. You now should be ready to run the server:
 
-   ```batch
+   ```bash
    python3 main.py
    ```
 
