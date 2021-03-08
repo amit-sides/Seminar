@@ -12,7 +12,7 @@ This server executes python scripts given by it's clients.
 
 ## Requirements
 
-* Linux machine (Tested on Ubuntu 20.04.2 74 bit). Setup instructions show Ubuntu's setup commands.
+* Linux machine (Tested on Ubuntu 20.04.2 - 64 bit). Setup instructions demonstrate Ubuntu's setup commands.
 * Python 3 (Tested on Python 3.8.5 - 64bit)
 * Pip for python 3 (Tested with version 20.0.2)
 * Docker (Tested with version 19.03.8)
@@ -76,3 +76,4 @@ This server executes python scripts given by it's clients.
 ## Known Issues
 
 * The docker runs the script to protect the host (server) from running malicious code. In order to send the output back to the user, the script is ran as a sub-process in the docker. As a result, the output is configured to be line-buffered. Most terminal executables are ran using line-buffered mode, but for some reason when running python scripts in the terminal some output is printed without flushing the standard output nor printing a new-line character. This behavior might cause the output that's printed to the client to appear later than it should have (compared to normal terminal execution). This issue is purely aesthetic and is not considered to be a security flaw.
+  * This issue can be observed using the test script `multiple_inputs_nl.py`.
