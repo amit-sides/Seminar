@@ -7,7 +7,7 @@ def main():
     name = input()
     print(f"Hi, {name}!")
     print("What's your age?")
-    age = input("age???\n")
+    age = input("age???")
     print(f"You are a boomer! {age}")
     print("What's your password?")
     password = input()
