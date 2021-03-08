@@ -6,4 +6,5 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/wolfSSL/wolfssl.git
   GIT_TAG        master)
 
+set(FETCHCONTENT_QUIET NO)
 FetchContent_MakeAvailable(WolfSSL)

@@ -82,7 +82,7 @@ class DockerSocket(object):
                 for proc_pipe in [process.stdout, process.stderr]:
                     if proc_pipe not in r:
                         continue
-                    
+
                     try:
                         line = proc_pipe.readline(settings.MAX_CHUNK_SIZE)
                     except OSError:
