@@ -104,7 +104,13 @@ class DockerSocket(object):
 
         except Exception as e:
             # Error encountered - Send Error Message
-            error_text = bytes(e.args[0], "ascii")
+            error_text = e.args[0]
+            if type(error_text) is not str:
+                if len(e.args) > 1:
+                    error_text = e.args[1]
+                else:
+                    error_text = "Unknown error."
+            error_text = bytes(error_text, "ascii")
             error_message_dict = dict(
                 type=messages.MessageType.ERROR,
                 error_code=settings.ErrorCodes.COMMUNICATION_ERROR,
