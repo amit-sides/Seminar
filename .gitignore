@@ -1,6 +1,7 @@
 *~$*.doc
 *~$*.docx
 ~WR*.tmp
+**/~*.pptx
 
 *cmake-build-debug
 */.idea
