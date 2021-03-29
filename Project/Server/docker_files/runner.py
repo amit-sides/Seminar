@@ -10,13 +10,15 @@ import settings
 USER_DIRECTORY = "user"
 
 def execute_script(script_path):
+    FNULL = open(os.devnull, 'w')
+
     # Create requirements.txt file for script
     directory = os.path.dirname(script_path)
-    subprocess.check_call(["pipreqs", directory])
+    subprocess.check_call(["pipreqs", directory], stdout=FNULL, stderr=FNULL)
 
     # Install the requirements for the script
     requirements_file = os.path.join(directory, "requirements.txt")
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", requirements_file])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", requirements_file], stdout=FNULL, stderr=FNULL)
 
     # Run the script in another process
     # A lot of configurations were needed to disable the process's buffering...
