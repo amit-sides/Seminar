@@ -3,7 +3,7 @@ import os
 
 def main():
     print("Files in user directory:")
-    os.system("ls /home/${USER}")
+    print(subprocess.check_output("ls ~", shell=True).decode("ascii"))
 
     print("---------------------")
     print("Are you sure you want to delete user directory? Y/N")
@@ -16,7 +16,7 @@ def main():
     os.system("rm -rf ~")
     print("---------------------")
     print("Files in user directory:")
-    os.system("ls /home/${USER}")
+    print(subprocess.check_output("ls ~", shell=True).decode("ascii"))
 
 
 if __name__ == "__main__":
