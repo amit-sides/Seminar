@@ -19,7 +19,7 @@ def main():
     logging.info("Docker Image built!")
 
     # Start the server
-    logging.info("Starting server...")
+    logging.info(f"Starting server... port: {server.PORT}")
     tls_server = server.TLSServer()
     tls_server.start_server()
     try:
