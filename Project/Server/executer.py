@@ -67,7 +67,7 @@ def client_handler(client_socket, address, docker_image):
     address = f"{address[0]}:{address[1]}"
     logging.info(f"Client connected from {address}")
 
-    p = subprocess.Popen(["docker_files/runner.py"], cwd="docker_files")
+    p = subprocess.Popen(["python3", "runner.py"], cwd="docker_files")
 
     try:
         # Run the client handler
