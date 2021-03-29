@@ -35,27 +35,6 @@ int execute_client(int argc, char **argv)
         return -1;
     }
 
-    // Load the certificate
-    if (argc > CERTIFICATE)
-    {
-        result = client.load_certificate(argv[CERTIFICATE]);
-        if (SSL_SUCCESS != result)
-        {
-            std::cerr << "Error: Failed to load certificate: " << argv[CERTIFICATE] << std::endl;
-            std::cerr << "Error code: " << result << std::endl;
-            return result;
-        }
-    }
-
-    // Set cipher list
-    result = client.set_cipher_suit(CIPHER_LIST);
-    if (SSL_SUCCESS != result)
-    {
-        std::cerr << "Error: Failed to load ciphers: " << CIPHER_LIST << std::endl;
-        std::cerr << "Error code: " << result << std::endl;
-        return result;
-    }
-
     // Convert port to integer
     port = std::stoi(argv[PORT]);
     if (port >=USHRT_MAX)

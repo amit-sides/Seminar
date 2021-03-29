@@ -121,30 +121,9 @@ bool TLSSocket::start_connection(const char *hostname, uint16_t port)
         return false;
     }
 
-    // Create the TLS connection using the context
-    connection = wolfSSL_new(context);
-    if (nullptr == connection)
-    {
-        return false;
-    }
-
     // Connect to the server
     result = connect(socket_fd, (const sockaddr*)&server_address, sizeof(server_address));
     if (0 != result)
-    {
-        return false;
-    }
-
-    // Assign the socket to the TLS connection
-    result = wolfSSL_set_fd(connection, socket_fd);
-    if (SSL_SUCCESS != result)
-    {
-        return false;
-    }
-
-    // Connect using the TLS connection (Perform TLS handshake...)
-    result = wolfSSL_connect(connection);
-    if (SSL_SUCCESS != result)
     {
         return false;
     }
@@ -171,7 +150,7 @@ int TLSSocket::send(const char *message, int message_size)
     }
 
     // Send the message
-    result = wolfSSL_write(connection, message, message_size);
+    result = ::send(socket_fd, message, message_size, 0);
     return result;
 }
 
@@ -193,7 +172,7 @@ int TLSSocket::recv(char *message, int message_size)
     }
 
     // Receive a message
-    result = wolfSSL_read(connection, message, message_size);
+    result = ::read(socket_fd, message, message_size);
     return result;
 }
 
@@ -206,16 +185,12 @@ bool TLSSocket::close_connection()
     if (connected)
     {
         // Shutdown the connection
-        result = wolfSSL_shutdown(connection);
+        result = shutdown(socket_fd, SHUT_RDWR);
         if (SSL_SUCCESS != result)
         {
             return false;
         }
         connected = false;
-
-        // Free resources of TLS connection
-        wolfSSL_free(connection);
-        connection = nullptr;
     }
 
     // Close socket
@@ -235,25 +210,10 @@ bool TLSSocket::close_connection()
 
 TLSSocket::~TLSSocket()
 {
-    // Shutdown connection
-    if (connected)
-    {
-        // Best effort
-        wolfSSL_shutdown(connection);
-        connected = false;
-
-        // Free resources of TLS connection
-        wolfSSL_free(connection);
-        connection = nullptr;
-    }
-
     // Close socket
     if (-1 != socket_fd)
     {
         close(socket_fd);
         socket_fd = -1;
     }
-
-    // Free resources of the context
-    wolfSSL_CTX_free(context);
 }
