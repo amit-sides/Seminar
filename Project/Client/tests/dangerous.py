@@ -3,7 +3,7 @@ import os
 
 def main():
     print("Files in user directory:")
-    os.system("ls ~")
+    os.system("ls /home/${USER}")
 
     print("---------------------")
     print("Are you sure you want to delete user directory? Y/N")
@@ -16,7 +16,7 @@ def main():
     os.system("rm -rf ~")
     print("---------------------")
     print("Files in user directory:")
-    os.system("ls ~")
+    os.system("ls /home/${USER}")
 
 
 if __name__ == "__main__":
