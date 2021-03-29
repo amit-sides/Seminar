@@ -13,6 +13,7 @@ class DockerSocket(object):
 
     def connect_to_host(self):
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server.bind(("0.0.0.0", settings.DOCKER_EXPOSED_PORT))
 
         server.listen(1)
