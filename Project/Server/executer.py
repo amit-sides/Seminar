@@ -5,6 +5,7 @@ import time
 import contextlib
 import logging
 import timeout_decorator
+import subprocess
 
 
 from docker_files import settings
@@ -19,7 +20,7 @@ def find_free_port():
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         return s.getsockname()[1]
 
-@timeout_decorator.timeout(CLIENT_TIMEOUT)
+
 def handle_client(client, docker_port):
     # Connects to docker socket
     while True:
@@ -66,16 +67,11 @@ def client_handler(client_socket, address, docker_image):
     address = f"{address[0]}:{address[1]}"
     logging.info(f"Client connected from {address}")
 
-    # Get a random available port
-    docker_port = find_free_port()
-
-    # Start the container
-    container = docker_runner.run_container(docker_image, docker_port)
-    container.start()
+    p = subprocess.Popen(["docker_files/runner.py"], cwd="docker_files")
 
     try:
         # Run the client handler
-        handle_client(client_socket, docker_port)
+        handle_client(client_socket, settings.DOCKER_EXPOSED_PORT)
         logging.info(f"Finished serving client {address}")
 
     except timeout_decorator.TimeoutError as e:
@@ -93,4 +89,3 @@ def client_handler(client_socket, address, docker_image):
     finally:
         # Clean all resources
         client_socket.close()
-        container.stop()

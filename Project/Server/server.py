@@ -8,30 +8,18 @@ KEYFILE = "Certificates/server.key"
 PORT = 12344
 MAX_LISTENERS = 10
 
-class TLSServer(object):
+class Server(object):
     def __init__(self):
-        # Creating the TLS context
-        self.context = ssl.SSLContext(ssl.PROTOCOL_TLS)
-        # Loading the server's certificate
-        self.context.load_cert_chain(certfile=CERTFILE, keyfile=KEYFILE)
-        # Setting allowed protocols: ONLY TLS 1.3 ALLOWED!
-        self.context.options |= ssl.OP_NO_SSLv2 | ssl.OP_NO_SSLv3 | \
-                                ssl.OP_NO_TLSv1 | ssl.OP_NO_TLSv1_1 | ssl.OP_NO_TLSv1_2
-
         self.pool = multiprocessing.Pool()
-        self.socket = None
         self.server = None
         self.running = False
 
     def start_server(self):
-        # Start TLS server
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind(("0.0.0.0", PORT))
-        self.socket.listen(MAX_LISTENERS)
-
-        # Wrap the listening TCP socket with the TLS connection
-        self.server = self.context.wrap_socket(self.socket, server_side=True)
+        # Start server
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server.bind(("0.0.0.0", PORT))
+        self.server.listen(MAX_LISTENERS)
 
         # Set server to running
         self.running = True

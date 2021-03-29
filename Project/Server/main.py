@@ -20,7 +20,7 @@ def main():
 
     # Start the server
     logging.info(f"Starting server... port: {server.PORT}")
-    tls_server = server.TLSServer()
+    tls_server = server.Server()
     tls_server.start_server()
     try:
         tls_server.serve_forever(executer.client_handler, docker_image)
