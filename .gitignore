@@ -1,11 +1,12 @@
 *~$*.doc
 *~$*.docx
 ~WR*.tmp
+~WR*.tmp
+*.swp
 
 *cmake-build-debug
-*/.idea
-*/*/.idea
-*/*/*/.idea
+**/.idea
+**/build
 
 *.pyc
 *.crt
