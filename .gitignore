@@ -1,7 +1,7 @@
 *~$*.doc
 *~$*.docx
 ~WR*.tmp
-~WR*.tmp
+**/~*.pptx
 *.swp
 
 *cmake-build-debug
