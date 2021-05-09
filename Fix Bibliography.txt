@@ -1,0 +1,5 @@
+1. Click on Bibliography text.
+2. Click Layout (most right pane).
+3. Click "AutoFit".
+4. Click "Fixed Column Width".
+5. Adjust column width by dragging the index boundary.

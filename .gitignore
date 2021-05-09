@@ -1,3 +1,20 @@
+*~$*.doc
+*~$*.docx
+~WR*.tmp
+**/~*.pptx
+*.swp
+
+*cmake-build-debug
+**/.idea
+**/build
+
+*.pyc
+*.crt
+*.srl
+*.key
+*.csr
+*.pem
+
 # Prerequisites
 *.d
 
