@@ -29,7 +29,7 @@ SERVER_P12:=server.p12
 # 	openssl s_server -key server.key -cert server.crt --accept <port> -tls1_3
 
 
-.PHONY: generate clean add remove
+.PHONY: generate clean install install_ubuntu install_mac install_centos remove
 
 generate:
 	# Generate CA RSA Key
