@@ -1,6 +1,8 @@
 
 OPENSSL:=openssl
 UBUNTU_CERT_DIR:=/usr/local/share/ca-certificates
+CENTOS_CERT_DIR:=/etc/pki/ca-trust/source/anchors
+MAC_CERT_KEYCHAIN:=/Library/Keychains/System.keychain
 
 CA_NAME:=self-ca
 CA_CERT:=ca.crt
@@ -13,6 +15,7 @@ SERVER_CERT:=server.crt
 SERVER_KEY:=server.key
 SERVER_CSR:=server.csr
 SERVER_PEM:=server.pem
+SERVER_P12:=server.p12
 
 # Based on https://gist.github.com/fntlnz/cf14feb5a46b2eda428e000157447309
 
@@ -51,15 +54,28 @@ generate:
 	$(OPENSSL) x509 -inform PEM -in $(SERVER_CERT) > $(SERVER_PEM)
 	$(OPENSSL) x509 -inform PEM -in $(CA_CERT) > $(CA_PEM)
 
+	# Generate P12
+	$(OPENSSL) pkcs12 -export -out $(SERVER_P12) -inkey $(SERVER_KEY) -in $(SERVER_CERT) -certfile $(CA_CERT)
+
 
 clean:
-	rm $(CA_CERT) $(CA_KEY) $(CA_SRL) $(CA_PEM) $(SERVER_CERT) $(SERVER_KEY) $(SERVER_CSR) $(SERVER_PEM)
+	rm $(CA_CERT) $(CA_KEY) $(CA_SRL) $(CA_PEM) $(SERVER_CERT) $(SERVER_KEY) $(SERVER_CSR) $(SERVER_PEM) $(SERVER_P12)
 
-add:	$(CA_CERT)
+install: install_ubuntu
+
+install_ubutnu:	$(CA_CERT)
 	cp $(CA_CERT) $(UBUNTU_CERT_DIR)/$(CA_CERT)
 	update-ca-certificates
+
+install_mac:	$(CA_CERT)
+	sudo security add-trusted-cert -d -r trustRoot -k $(MAC_CERT_KEYCHAIN) $(CA_CERT)
+
+install_centos:	$(CA_CERT)
+	yum install ca-certificates -y
+	update-ca-trust force-enable
+	cp $(CA_CERT) $(CENTOS_CERT_DIR)/$(CA_CERT)
+	update-ca-trust extract
 
 remove: $(UBUNTU_CERT_DIR)/$(CA_CERT)
 	rm $(UBUNTU_CERT_DIR)/$(CA_CERT)
 	update-ca-certificates --fresh
-
